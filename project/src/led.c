@@ -6,45 +6,53 @@
 void led_init()
 {
     P1DIR |= LEDS;
-    P1OUT &= ~LEDS; /* leds initially off */
+    P1OUT &= ~LED_RED;
+    P1OUT &= ~LED_GREEN;
 }
 
-both_leds_on()
+void both_leds_on()
 {
-    P1OUT |= LEDS;
+    P1OUT |= LED_RED;
+    P1OUT |= LED_GREEN;
+}
+
+void red_led_on()
+{
+    P1OUT |= LED_RED;
+    P1OUT &= ~LED_GREEN;
+}
+
+void green_led_on()
+{
+    P1OUT |= LED_GREEN;
+    P1OUT &= ~LED_RED;
 }
 
 int led_on = 0;
 
-// Toggles the green LED
-void siren()
+
+void siren_update()
 {
-  if (led_on) {
-    P1OUT &= ~LED_RED;   /* turn off red LED */
-    P1OUT |= LED_GREEN;  /* turn on green LED */
+  if (led_on){
+    P1OUT &= ~LED_GREEN;
+    P1OUT |= LED_RED;
     buzzer_set_period(1000);
     led_on = 0;
-  } else {
-    P1OUT &= ~LED_GREEN; /* turn off green LED */
-    P1OUT |= LED_RED;    /* turn on red LED */
-    buzzer_set_period(500);
+  }else{
+    P1OUT |= LED_GREEN;
+    P1OUT &= ~LED_RED;
+    buzzer_set_period(2000);
     led_on = 1;
   }
 }
 
-void led_update() {
-
-}
-
-  int wcount = 0;
-
-  // Uses the watchdog timer to toggle the green LED every 250 interrupts or 1 second
-  void
-  __interrupt_vec(WDT_VECTOR) WDT() /* 250 interrupts/sec */
+void siren()
+{
+  static int count = 0;
+  count++;
+  if (count == 100)
   {
-    wcount++ ; if (wcount == 100)
-    {
-      wcount = 0;
-      state_next();
-    }
+    siren_update();
+    count = 0;
   }
+}

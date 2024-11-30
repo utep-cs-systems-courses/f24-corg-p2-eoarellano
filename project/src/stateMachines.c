@@ -3,25 +3,39 @@
 #include "led.h"
 #include "buzzer.h"
 #include "switches.h"
-
-static int state = 1; // Initial state
+#include "libTimer.h"
+int state = 0;
 
 void state_advance()
-{
+{   
     switch (state)
     {
     case 1:
         both_leds_on();
-        buzzer_set_period(0);
-        state = 2;
+        buzzer_set_period(1000);
         break;
     case 2:
-        siren();
-        state = 3;
+        red_led_on();
+        buzzer_set_period(0);
         break;
     case 3:
-        buzzer_set_period(3000);
-        state = 1;
+        //wdt handles siren
         break;
+    case 4:
+        green_led_on();
+        buzzer_set_period(0);
+        break;
+    }
+}
+
+void __interrupt_vec(WDT_VECTOR) WDT()
+{
+    if (state == 3)
+    {
+        siren();
+    }
+    else 
+    {
+        state_advance();
     }
 }

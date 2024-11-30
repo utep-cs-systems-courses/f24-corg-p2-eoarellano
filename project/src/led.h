@@ -8,5 +8,7 @@
 void led_init();		/* initialize LEDs */
 void siren();
 void both_leds_on();
+void green_led_on();
+void red_led_on();
 
 #endif // included
