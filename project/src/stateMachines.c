@@ -23,7 +23,6 @@ void state_advance()
         break;
     case 4:
         green_led_on();
-        buzzer_set_period(0);
         break;
     }
 }
@@ -33,6 +32,10 @@ void __interrupt_vec(WDT_VECTOR) WDT()
     if (state == 3)
     {
         siren();
+    }
+    if (state == 4)
+    {
+        halloween_update();
     }
     else 
     {
