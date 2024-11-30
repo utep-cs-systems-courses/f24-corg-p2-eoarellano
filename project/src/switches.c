@@ -2,6 +2,8 @@
 #include "switches.h"
 #include "stateMachines.h"
 
+char switch_state_down;
+
 static char switch_update_interrupt_sense()
 {
   char p2val = P2IN;
@@ -30,19 +32,23 @@ void switch_interrupt_handler()
 
   if (sw1)
   {
-    state_advance(1);
+    state = 1;
+    switch_state_down = 1;
   }
   else if (sw2)
   {
-    state_advance(2);
+    state = 2;
+    switch_state_down = 1;
   }
   else if (sw3)
   {
-    state_advance(3);
+    state = 3;
+    switch_state_down = 1;
   }
   else if (sw4)
   {
-    state_advance(4);
+    state = 4;
+    switch_state_down = 1;
   }
 }
 
